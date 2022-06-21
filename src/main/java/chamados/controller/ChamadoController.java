@@ -3,8 +3,6 @@ package chamados.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,10 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 
 import chamados.dto.ChamadoDTO;
-import chamados.exception.ResourceNotFoundException;
 import chamados.model.Chamado;
-import chamados.model.Cliente;
-import chamados.repository.ChamadoRepository;
 import chamados.service.Impl.ChamadoServiceInterfaceImpl;
 
 @RestController
@@ -33,54 +28,39 @@ public class ChamadoController {
 	@Autowired
 	ChamadoServiceInterfaceImpl chamadoServiceInterfaceImpl;
 	
-	@GetMapping("/listar")
+	@GetMapping("/list")
 	@ResponseStatus(HttpStatus.OK)
 	public List<ChamadoDTO> getAllChamados(){	
 		return chamadoServiceInterfaceImpl.getChamados();
 	}
 	
-	@GetMapping("/listar/{id}")
+	@GetMapping("/list/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<ChamadoDTO> getChamadooById(@PathVariable(value = "cliente") Long id)
-	    throws ResourceNotFoundException {		
-	    Chamado chamado = chamadoRepository.findById(id)
-	      .orElseThrow(() -> new ResourceNotFoundException("Conta não encontrada para o ID :: " + id));
-	    return ResponseEntity.ok().body(chamado);
+	public ResponseEntity<ChamadoDTO> getChamadoById(@PathVariable(value = "cliente") Long id) {		
+		ChamadoDTO chamadoDTO = chamadoServiceInterfaceImpl.getChamado(id);
+	    return ResponseEntity.ok().body(chamadoDTO);
 	}
 	
-	@PostMapping("/cadastrar")
+	@PostMapping("/save")
 	@ResponseStatus(HttpStatus.CREATED)
-	public Chamado createChamado(@RequestBody Chamado chamado) {
-		return this.chamadoRepository.save(chamado);
+	public ChamadoDTO createChamado(@RequestBody Chamado chamado) {
+		return this.chamadoServiceInterfaceImpl.createChamado(chamado);
 	}
 	
-	@PutMapping("/atualizar/{id}")
+	@PutMapping("/update/{id}")
 	@ResponseStatus(HttpStatus.OK)
     public ResponseEntity<ChamadoDTO> updateChamado(@PathVariable(value = "id") Long id,
-    	@Validated @RequestBody Chamado cadastroCaracteristicas) throws ResourceNotFoundException {
-        Chamado chamado = chamadoRepository.findById(id)
-        .orElseThrow(() -> new ResourceNotFoundException("Conta não encontrada para o ID :: " + id));
-        
-        chamado.setCpf(cadastroCaracteristicas.getCpf());
-        chamado.setEmail(cadastroCaracteristicas.getEmail());
-        chamado.setNome(cadastroCaracteristicas.getNome());
-        chamado.setDataNascimento(cadastroCaracteristicas.getDataNascimento());*/
-        
-        return ResponseEntity.ok(this.chamadoRepository.save(chamado));
-        
+    	@Validated @RequestBody Chamado chamadoCaracteristicas) {
+		ChamadoDTO chamadoDTO  = chamadoServiceInterfaceImpl.updateChamado(id, chamadoCaracteristicas);        
+        return ResponseEntity.ok(chamadoDTO);     
     }
 	
-
-	@DeleteMapping("/deletar/{id}")
+	@DeleteMapping("/delete/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public Map<String, Boolean> deleteChamado(@PathVariable(value = "id") Long id) 
-			throws ResourceNotFoundException {
-	    Chamado chamado = chamadoRepository.findById(id)
-	   .orElseThrow(() -> new ResourceNotFoundException("Conta não encontrada para o ID :: " + id));
-	
-	    this.chamadoRepository.delete(chamado);
+	public Map<String, Boolean> deleteChamado(@PathVariable(value = "id") Long id)  {
+		chamadoServiceInterfaceImpl.deleteChamado(id);       
 	    Map<String, Boolean> resposta = new HashMap<>();
-	    resposta.put("cadastro deletado", Boolean.TRUE);
+	    resposta.put("chamado deletado", Boolean.TRUE);
 	    return resposta;
 	}
 

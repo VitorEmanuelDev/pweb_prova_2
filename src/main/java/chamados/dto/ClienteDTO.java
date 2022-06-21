@@ -64,11 +64,11 @@ public class ClienteDTO {
 		this.endereco = endereco;
 	}
 
-	public List<ChamadoDTO> getChamado() {
+	public List<ChamadoDTO> getChamados() {
 		return chamadoDTOs;
 	}
 
-	public void setChamado(List<ChamadoDTO> chamadoDTOs) {
+	public void setChamados(List<ChamadoDTO> chamadoDTOs) {
 		this.chamadoDTOs = chamadoDTOs;
 	}
 

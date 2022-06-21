@@ -3,47 +3,43 @@ package chamados.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.br.CNPJ;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 
 @Entity
-@Table(name = "clientes", uniqueConstraints={@UniqueConstraint(columnNames= "cnpj")})
+@Table(name = "clientes")
 public class Cliente {
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Id 
+	@SequenceGenerator(name = "seq_td_id", sequenceName = "seq_td_id")
+	@GeneratedValue(generator = "seq_td_id", strategy = GenerationType.SEQUENCE)
 	private long id;
-	@NotNull
+	//@NotNull
 	@Size(min=3, max=100)
 	private String nome;
-	@NotNull
+	//@NotNull
 	@Pattern(regexp="\\d{14}", message = "Apenas informe 14 digitos.")
 	@CNPJ
-	@Column(name = "cnpj")
+	@Column(name = "cnpj", unique=true)
 	private String cnpj;
-	@NotNull
+	//@NotNull
 	@Size(min=10, max=140)
 	@Column(name = "endereco")
 	private String endereco;
 	@Column(name = "chamados")
-	@JsonManagedReference
-	@OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, mappedBy = "cliente", orphanRemoval = true)
+	@OneToMany
 	private List<Chamado> chamados;
 	
 	public Cliente() {
@@ -53,11 +49,26 @@ public class Cliente {
 	public Cliente(@NotNull @Size(min = 3, max = 100) String nome,
 			@NotNull @Pattern(regexp = "\\d{14}", message = "Apenas informe 14 digitos.") @CNPJ String cnpj,
 			@NotNull @Size(min = 10, max = 140) String endereco) {
-		super();
 		this.nome = nome;
 		this.cnpj = cnpj;
 		this.endereco = endereco;
 		this.chamados = new ArrayList<>();
+	}
+
+	public String getCnpj() {
+		return cnpj;
+	}
+
+	public void setCnpj(String cnpj) {
+		this.cnpj = cnpj;
+	}
+
+	public String getEndereco() {
+		return endereco;
+	}
+
+	public void setEndereco(String endereco) {
+		this.endereco = endereco;
 	}
 
 	public long getId() {
@@ -67,22 +78,13 @@ public class Cliente {
 	public String getNome() {
 		return nome;
 	}
-
-	public void modificarCliente(String nome, String cnpj) {
+	
+	public void setNome(String nome) {
 		this.nome = nome;
-		this.cnpj = cnpj;
 	}
 
-	public String getCnpj() {
-		return cnpj;
-	}
-
-	public String getEndereco() {
-		return endereco;
-	}
-
-	public void setEndereco(String endereco) {
-		this.endereco = endereco;
+	public void setChamados(List<Chamado> chamados) {
+		this.chamados = chamados;
 	}
 
 	public List<Chamado> getChamados() {

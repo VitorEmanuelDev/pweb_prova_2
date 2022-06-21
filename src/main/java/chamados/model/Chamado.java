@@ -6,15 +6,13 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -22,19 +20,16 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.br.CNPJ;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
-import chamados.dto.ClienteDTO;
 
 @Entity
 @Table(name = "chamados")
 public class Chamado {
 	
-	@Id
+	@Id 
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
-	@NotNull
-	@Column(name = "cliente_id")
+	//@NotNull
+	@Column(name = "cliente_id", insertable = false, updatable = false)
 	private Long clienteId;
 	@NotNull
 	@Pattern(regexp="\\d{14}", message = "Apenas informe 14 digitos.")
@@ -56,21 +51,14 @@ public class Chamado {
 	private String endereco;
 	@NotNull
 	@Column(name = "cadastrado_em")
-	private LocalDateTime cadastradoEm;
-	@JsonBackReference
-	@ManyToOne(cascade = CascadeType.PERSIST, targetEntity = ClienteDTO.class, fetch = FetchType.LAZY)
-	@JoinColumn(name = "cliente_id", referencedColumnName = "id")
+	private Date cadastradoEm;
+	@ManyToOne
 	private Cliente cliente;
-	
-	public Chamado() {
-		
-	}
 	
 	public Chamado(@NotNull Long clienteId,
 			@NotNull @Pattern(regexp = "\\d{14}", message = "Apenas informe 14 digitos.") @CNPJ String clienteCnpj,
 			@NotNull @Size(min = 3, max = 100) String nomeCliente, @NotNull String assunto,
-			@NotNull String endereco, Cliente cliente) {
-		super();
+			@NotNull String endereco) {
 		this.clienteId = clienteId;
 		this.clienteCnpj = clienteCnpj;
 		this.nomeCliente = nomeCliente;
@@ -78,7 +66,10 @@ public class Chamado {
 		this.status = Status.EM_ABERTO.toString();
 		this.endereco = endereco;
 		this.cadastradoEm = setCadastradoEm();
-		this.cliente = cliente;
+	}
+
+	public Chamado() {
+
 	}
 
 	public long getId() {
@@ -121,26 +112,11 @@ public class Chamado {
 	public void setEndereco(String endereco) {
 		this.endereco = endereco;
 	}
-	public LocalDateTime getCadastradoEm() {
+	public Date getCadastradoEm() {
 		return cadastradoEm;
 	}
-	public LocalDateTime setCadastradoEm() {
-		TimeZone timezone = TimeZone.getTimeZone("Americana/Sao_Paulo");
-		GregorianCalendar gc = new GregorianCalendar();
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-		formatter.setTimeZone(timezone);
-		gc.setTimeZone(timezone);
-		gc.setTime(new Date());
-		LocalDateTime localDateTime = LocalDateTime.parse(formatter.format(gc.getTime()));
-		this.cadastradoEm = localDateTime;
-		return cadastradoEm;
+	public Date setCadastradoEm() {
+		return new Date();
 	}
-	public Cliente getCliente() {
-		return cliente;
-	}
-	public void setCliente(Cliente cliente) {
-		this.cliente = cliente;
-	}
-	
 
 }

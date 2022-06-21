@@ -5,27 +5,29 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name = "perfis", uniqueConstraints={@UniqueConstraint(columnNames= "email")})
+@Table(name = "perfis")
 public class Perfil {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Id 
+	@SequenceGenerator(name = "seq_td_id", sequenceName = "seq_td_id")
+	@GeneratedValue(generator = "seq_td_id", strategy = GenerationType.SEQUENCE)
 	private long id;
-	@NotNull
+	//@NotNull
 	@Size(min=3, max=100)
 	@Column(name = "nome")
 	private String nome;
-	@NotNull
+	//@NotNull
 	@Email
 	@Pattern(regexp=".+@.+\\..+", message = "Informe um e-mail válido")
+	@Column(name="email", unique=true)
 	private String email;
 	@Column(name = "foto")
 	private String foto;

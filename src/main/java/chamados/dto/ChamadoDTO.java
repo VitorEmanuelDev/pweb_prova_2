@@ -1,7 +1,7 @@
 package chamados.dto;
 
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
@@ -44,7 +44,7 @@ public class ChamadoDTO {
 	private String endereco;
 	@NotNull
 	@Column(name = "cadastrado_em")
-	private LocalDateTime cadastradoEm;
+	private Date cadastradoEm;
 	@JsonBackReference
 	@ManyToOne(cascade = CascadeType.PERSIST, targetEntity = ClienteDTO.class, fetch = FetchType.LAZY)
 	@JoinColumn(name = "cliente_id", referencedColumnName = "id")
@@ -102,12 +102,12 @@ public class ChamadoDTO {
 		this.endereco = endereco;
 	}
 
-	public LocalDateTime getCadastradoEm() {
+	public Date getCadastradoEm() {
 		return cadastradoEm;
 	}
 
-	public void setCadastradoEm(LocalDateTime cadastradoEm) {
-		this.cadastradoEm = cadastradoEm;
+	public void setCadastradoEm(Date date) {
+		this.cadastradoEm = date;
 	}
 
 	public ClienteDTO getClienteDTO() {
