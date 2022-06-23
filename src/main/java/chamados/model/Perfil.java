@@ -5,7 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -17,14 +16,13 @@ import javax.validation.constraints.Size;
 public class Perfil {
 
 	@Id 
-	@SequenceGenerator(name = "seq_td_id", sequenceName = "seq_td_id")
-	@GeneratedValue(generator = "seq_td_id", strategy = GenerationType.SEQUENCE)
-	private long id;
-	//@NotNull
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+	@NotNull
 	@Size(min=3, max=100)
 	@Column(name = "nome")
 	private String nome;
-	//@NotNull
+	@NotNull
 	@Email
 	@Pattern(regexp=".+@.+\\..+", message = "Informe um e-mail válido")
 	@Column(name="email", unique=true)
@@ -69,7 +67,7 @@ public class Perfil {
 		this.foto = foto;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 

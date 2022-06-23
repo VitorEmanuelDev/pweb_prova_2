@@ -5,23 +5,34 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import chamados.dto.ChamadoDTO;
+import chamados.exception.ResourceNotFoundException;
 import chamados.model.Chamado;
+import chamados.model.Cliente;
 import chamados.repository.ChamadoRepository;
+import chamados.repository.ClienteRepository;
 import chamados.service.ChamadoServiceInterface;
 
 @Service
+
 public class ChamadoServiceInterfaceImpl implements ChamadoServiceInterface{
 
 	@Autowired
 	private ChamadoRepository chamadoRepository;
 
+	@Autowired
+	private ClienteRepository clienteRepository;
+
 	@Override
-	public ChamadoDTO createChamado(Chamado chamado) {
-		Chamado chamadoAtual = new Chamado(chamado.getClienteId(), chamado.getClienteCnpj(), 
+	@Transactional
+	public ChamadoDTO createChamado(Chamado chamado) throws ResourceNotFoundException{
+		Cliente cliente = this.clienteRepository.findById(chamado.getClienteId())
+				.orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado para o ID :: " + chamado.getClienteId()));
+		Chamado chamadoAtual = new Chamado(cliente.getId(), chamado.getClienteCnpj(), 
 				chamado.getNomeCliente(), chamado.getAssunto(), chamado.getEndereco());
-		this.chamadoRepository.save(chamadoAtual);
+		chamadoAtual = this.chamadoRepository.save(chamadoAtual);
 		ChamadoDTO chamadoDTO = new ChamadoDTO();
 		chamadoDTO.setAssunto(chamadoAtual.getAssunto());
 		chamadoDTO.setCadastradoEm(chamadoAtual.getCadastradoEm());
@@ -30,13 +41,14 @@ public class ChamadoServiceInterfaceImpl implements ChamadoServiceInterface{
 		chamadoDTO.setEndereco(chamadoAtual.getEndereco());
 		chamadoDTO.setNomeCliente(chamadoAtual.getNomeCliente());
 		chamadoDTO.setStatus(chamadoAtual.getStatus());
-
 		return chamadoDTO;	
 	}
 
 	@Override
-	public ChamadoDTO updateChamado(Long id, Chamado chamado) {
-		Chamado chamadoAtual = this.chamadoRepository.getReferenceById(id);
+	@Transactional
+	public ChamadoDTO updateChamado(Long id, Chamado chamado) throws ResourceNotFoundException {
+		Chamado chamadoAtual = this.chamadoRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Chamado não encontrado para o ID :: " + id));
 		chamadoAtual.setAssunto(chamado.getAssunto());
 		chamadoAtual.setCadastradoEm();
 		chamadoAtual.setClienteCnpj(chamado.getClienteCnpj());
@@ -57,11 +69,13 @@ public class ChamadoServiceInterfaceImpl implements ChamadoServiceInterface{
 	}
 
 	@Override
+	@Transactional
 	public void deleteChamado(Long id) {
 		this.chamadoRepository.deleteById(id);
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<ChamadoDTO> getChamados() {
 		List<ChamadoDTO> chamadosDTO = new ArrayList<>();		
 		this.chamadoRepository.findAll().forEach(chamado -> {
@@ -72,8 +86,10 @@ public class ChamadoServiceInterfaceImpl implements ChamadoServiceInterface{
 	}
 
 	@Override
-	public ChamadoDTO getChamado(Long id) {
-		Chamado chamado = chamadoRepository.getReferenceById(id);
+	@Transactional(readOnly = true)
+	public ChamadoDTO getChamado(Long id) throws ResourceNotFoundException {
+		Chamado chamado = chamadoRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Chamado não encontrado para o ID :: " + id));
 		ChamadoDTO chamadoDTO = new ChamadoDTO();
 		chamadoDTO.setAssunto(chamado.getAssunto());
 		chamadoDTO.setCadastradoEm(chamado.getCadastradoEm());

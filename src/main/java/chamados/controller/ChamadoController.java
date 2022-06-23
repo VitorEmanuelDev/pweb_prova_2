@@ -18,47 +18,48 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 
 import chamados.dto.ChamadoDTO;
+import chamados.exception.ResourceNotFoundException;
 import chamados.model.Chamado;
-import chamados.service.Impl.ChamadoServiceInterfaceImpl;
+import chamados.service.ChamadoServiceInterface;
 
 @RestController
 @RequestMapping("/dashboard")
 public class ChamadoController {	
 	
 	@Autowired
-	ChamadoServiceInterfaceImpl chamadoServiceInterfaceImpl;
+	ChamadoServiceInterface chamadoServiceInterface;
 	
 	@GetMapping("/list")
 	@ResponseStatus(HttpStatus.OK)
 	public List<ChamadoDTO> getAllChamados(){	
-		return chamadoServiceInterfaceImpl.getChamados();
+		return chamadoServiceInterface.getChamados();
 	}
 	
 	@GetMapping("/list/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<ChamadoDTO> getChamadoById(@PathVariable(value = "cliente") Long id) {		
-		ChamadoDTO chamadoDTO = chamadoServiceInterfaceImpl.getChamado(id);
+	public ResponseEntity<ChamadoDTO> getChamadoById(@PathVariable(value = "cliente") Long id) throws ResourceNotFoundException {		
+		ChamadoDTO chamadoDTO = chamadoServiceInterface.getChamado(id);
 	    return ResponseEntity.ok().body(chamadoDTO);
 	}
 	
 	@PostMapping("/save")
 	@ResponseStatus(HttpStatus.CREATED)
-	public ChamadoDTO createChamado(@RequestBody Chamado chamado) {
-		return this.chamadoServiceInterfaceImpl.createChamado(chamado);
+	public ChamadoDTO createChamado(@RequestBody Chamado chamado) throws ResourceNotFoundException {
+		return this.chamadoServiceInterface.createChamado(chamado);
 	}
 	
 	@PutMapping("/update/{id}")
 	@ResponseStatus(HttpStatus.OK)
     public ResponseEntity<ChamadoDTO> updateChamado(@PathVariable(value = "id") Long id,
-    	@Validated @RequestBody Chamado chamadoCaracteristicas) {
-		ChamadoDTO chamadoDTO  = chamadoServiceInterfaceImpl.updateChamado(id, chamadoCaracteristicas);        
+    	@Validated @RequestBody Chamado chamadoCaracteristicas) throws ResourceNotFoundException {
+		ChamadoDTO chamadoDTO  = chamadoServiceInterface.updateChamado(id, chamadoCaracteristicas);        
         return ResponseEntity.ok(chamadoDTO);     
     }
 	
 	@DeleteMapping("/delete/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public Map<String, Boolean> deleteChamado(@PathVariable(value = "id") Long id)  {
-		chamadoServiceInterfaceImpl.deleteChamado(id);       
+		chamadoServiceInterface.deleteChamado(id);       
 	    Map<String, Boolean> resposta = new HashMap<>();
 	    resposta.put("chamado deletado", Boolean.TRUE);
 	    return resposta;

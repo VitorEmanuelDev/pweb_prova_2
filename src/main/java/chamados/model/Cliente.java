@@ -9,7 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -23,18 +22,17 @@ import org.hibernate.validator.constraints.br.CNPJ;
 public class Cliente {
 	
 	@Id 
-	@SequenceGenerator(name = "seq_td_id", sequenceName = "seq_td_id")
-	@GeneratedValue(generator = "seq_td_id", strategy = GenerationType.SEQUENCE)
-	private long id;
-	//@NotNull
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+	@NotNull
 	@Size(min=3, max=100)
 	private String nome;
-	//@NotNull
+	@NotNull
 	@Pattern(regexp="\\d{14}", message = "Apenas informe 14 digitos.")
 	@CNPJ
 	@Column(name = "cnpj", unique=true)
 	private String cnpj;
-	//@NotNull
+	@NotNull
 	@Size(min=10, max=140)
 	@Column(name = "endereco")
 	private String endereco;
@@ -71,7 +69,7 @@ public class Cliente {
 		this.endereco = endereco;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 

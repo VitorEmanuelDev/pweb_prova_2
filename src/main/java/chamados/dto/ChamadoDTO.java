@@ -2,19 +2,14 @@ package chamados.dto;
 
 
 import java.util.Date;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.br.CNPJ;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 public class ChamadoDTO {
 
@@ -45,10 +40,6 @@ public class ChamadoDTO {
 	@NotNull
 	@Column(name = "cadastrado_em")
 	private Date cadastradoEm;
-	@JsonBackReference
-	@ManyToOne(cascade = CascadeType.PERSIST, targetEntity = ClienteDTO.class, fetch = FetchType.LAZY)
-	@JoinColumn(name = "cliente_id", referencedColumnName = "id")
-	private ClienteDTO clienteDTO;
 	
 	public ChamadoDTO() {
 		
@@ -108,14 +99,6 @@ public class ChamadoDTO {
 
 	public void setCadastradoEm(Date date) {
 		this.cadastradoEm = date;
-	}
-
-	public ClienteDTO getClienteDTO() {
-		return clienteDTO;
-	}
-
-	public void setClienteDTO(ClienteDTO clienteDTO) {
-		this.clienteDTO = clienteDTO;
 	}
 
 }

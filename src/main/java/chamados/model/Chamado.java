@@ -1,25 +1,17 @@
 package chamados.model;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-
 import org.hibernate.validator.constraints.br.CNPJ;
-
 
 @Entity
 @Table(name = "chamados")
@@ -27,9 +19,8 @@ public class Chamado {
 	
 	@Id 
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
-	//@NotNull
-	@Column(name = "cliente_id", insertable = false, updatable = false)
+	private Long id;
+	@Column(name = "cliente_id")
 	private Long clienteId;
 	@NotNull
 	@Pattern(regexp="\\d{14}", message = "Apenas informe 14 digitos.")
@@ -52,8 +43,6 @@ public class Chamado {
 	@NotNull
 	@Column(name = "cadastrado_em")
 	private Date cadastradoEm;
-	@ManyToOne
-	private Cliente cliente;
 	
 	public Chamado(@NotNull Long clienteId,
 			@NotNull @Pattern(regexp = "\\d{14}", message = "Apenas informe 14 digitos.") @CNPJ String clienteCnpj,
@@ -72,7 +61,7 @@ public class Chamado {
 
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
