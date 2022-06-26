@@ -11,7 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.br.CNPJ;
@@ -28,7 +27,6 @@ public class Cliente {
 	@Size(min=3, max=100)
 	private String nome;
 	@NotNull
-	@Pattern(regexp="\\d{14}", message = "Apenas informe 14 digitos.")
 	@CNPJ
 	@Column(name = "cnpj", unique=true)
 	private String cnpj;
@@ -45,7 +43,7 @@ public class Cliente {
 	}
 
 	public Cliente(@NotNull @Size(min = 3, max = 100) String nome,
-			@NotNull @Pattern(regexp = "\\d{14}", message = "Apenas informe 14 digitos.") @CNPJ String cnpj,
+			@NotNull @CNPJ String cnpj,
 			@NotNull @Size(min = 10, max = 140) String endereco) {
 		this.nome = nome;
 		this.cnpj = cnpj;
@@ -92,5 +90,4 @@ public class Cliente {
 	public void adicionarChamado(Chamado chamado) {
 		this.chamados.add(chamado);
 	}
-
 }

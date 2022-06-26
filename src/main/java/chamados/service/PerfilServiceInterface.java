@@ -8,8 +8,8 @@ import chamados.model.Perfil;
 
 public interface PerfilServiceInterface {
 	public PerfilDTO createPerfil(Perfil perfil);
-	public PerfilDTO updatePerfil(Long id, Perfil perfil) throws ResourceNotFoundException;
-	public void deletePerfil(Long id);
 	public List<PerfilDTO> getPerfis();
 	public PerfilDTO getPerfil(Long id) throws ResourceNotFoundException;
+	public PerfilDTO updatePerfil(Long id, Perfil perfil) throws ResourceNotFoundException;
+	public void deletePerfil(Long id);
 }

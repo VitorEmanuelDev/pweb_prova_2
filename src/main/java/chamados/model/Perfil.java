@@ -2,9 +2,12 @@ package chamados.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -27,20 +30,23 @@ public class Perfil {
 	@Pattern(regexp=".+@.+\\..+", message = "Informe um e-mail válido")
 	@Column(name="email", unique=true)
 	private String email;
-	@Column(name = "foto")
-	private String foto;
+	@OneToOne(targetEntity=Photo.class, fetch=FetchType.EAGER)
+	@JoinColumn(name="perfil_id")
+	private Photo foto;
 
 	public Perfil() {
 
 	}
 
 	public Perfil(@NotNull @Size(min = 3, max = 100) String nome,
-			@NotNull @Email @Pattern(regexp = ".+@.+\\..+", message = "Informe um e-mail válido") String email,
-			String foto) {
-		super();
+			@NotNull @Email @Pattern(regexp = ".+@.+\\..+", message = "Informe um e-mail válido") String email) {
 		this.nome = nome;
 		this.email = email;
-		this.foto = foto;
+	}
+	
+
+	public Long getId() {
+		return id;
 	}
 
 	public String getNome() {
@@ -59,16 +65,12 @@ public class Perfil {
 		this.email = email;
 	}
 
-	public String getFoto() {
+	public Photo getFoto() {
 		return foto;
 	}
 
-	public void setFoto(String foto) {
+	public void setFoto(Photo foto) {
 		this.foto = foto;
-	}
-
-	public Long getId() {
-		return id;
 	}
 
 }

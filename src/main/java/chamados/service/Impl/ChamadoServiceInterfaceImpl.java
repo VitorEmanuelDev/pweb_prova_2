@@ -3,6 +3,7 @@ package chamados.service.Impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,23 +26,18 @@ public class ChamadoServiceInterfaceImpl implements ChamadoServiceInterface{
 	@Autowired
 	private ClienteRepository clienteRepository;
 
+
+	@Autowired
+	private ModelMapper mapper;
+
 	@Override
 	@Transactional
 	public ChamadoDTO createChamado(Chamado chamado) throws ResourceNotFoundException{
 		Cliente cliente = this.clienteRepository.findById(chamado.getClienteId())
-				.orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado para o ID :: " + chamado.getClienteId()));
-		Chamado chamadoAtual = new Chamado(cliente.getId(), chamado.getClienteCnpj(), 
-				chamado.getNomeCliente(), chamado.getAssunto(), chamado.getEndereco());
+				.orElseThrow(() -> new ResourceNotFoundException("Chamado não encontrado para o ID :: " + chamado.getClienteId()));
+		Chamado chamadoAtual = new Chamado(cliente.getId(), chamado.getNomeCliente(), chamado.getAssunto(), chamado.getComplemento(), chamado.getStatus());
 		chamadoAtual = this.chamadoRepository.save(chamadoAtual);
-		ChamadoDTO chamadoDTO = new ChamadoDTO();
-		chamadoDTO.setAssunto(chamadoAtual.getAssunto());
-		chamadoDTO.setCadastradoEm(chamadoAtual.getCadastradoEm());
-		chamadoDTO.setClienteCnpj(chamadoAtual.getClienteCnpj());
-		chamadoDTO.setClienteId(chamadoAtual.getClienteId());
-		chamadoDTO.setEndereco(chamadoAtual.getEndereco());
-		chamadoDTO.setNomeCliente(chamadoAtual.getNomeCliente());
-		chamadoDTO.setStatus(chamadoAtual.getStatus());
-		return chamadoDTO;	
+		return mapper.map(chamadoAtual, ChamadoDTO.class);
 	}
 
 	@Override
@@ -49,23 +45,14 @@ public class ChamadoServiceInterfaceImpl implements ChamadoServiceInterface{
 	public ChamadoDTO updateChamado(Long id, Chamado chamado) throws ResourceNotFoundException {
 		Chamado chamadoAtual = this.chamadoRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Chamado não encontrado para o ID :: " + id));
-		chamadoAtual.setAssunto(chamado.getAssunto());
-		chamadoAtual.setCadastradoEm();
-		chamadoAtual.setClienteCnpj(chamado.getClienteCnpj());
-		chamadoAtual.setClienteId(chamado.getClienteId());
-		chamadoAtual.setEndereco(chamado.getEndereco());
-		chamadoAtual.setNomeCliente(chamado.getNomeCliente());
-		chamadoAtual.setStatus(chamado.getStatus());
-		this.chamadoRepository.save(chamadoAtual);
-		ChamadoDTO chamadoDTO = new ChamadoDTO();
-		chamadoDTO.setAssunto(chamadoAtual.getAssunto());
-		chamadoDTO.setCadastradoEm(chamadoAtual.getCadastradoEm());
-		chamadoDTO.setClienteCnpj(chamadoAtual.getClienteCnpj());
-		chamadoDTO.setClienteId(chamadoAtual.getClienteId());
-		chamadoDTO.setEndereco(chamadoAtual.getEndereco());
-		chamadoDTO.setNomeCliente(chamadoAtual.getNomeCliente());
-		chamadoDTO.setStatus(chamadoAtual.getStatus());
-		return chamadoDTO;	
+		if(chamado.getAssunto() != null && !chamado.getAssunto().isBlank() && !chamado.getAssunto().isEmpty())
+			chamadoAtual.setAssunto(chamado.getAssunto());
+		if(chamado.getComplemento() != null && !chamado.getComplemento().isBlank() && !chamado.getComplemento().isEmpty())
+			chamadoAtual.setComplemento(chamado.getComplemento());
+		if(chamado.getStatus() != null && !chamado.getStatus().isBlank() && !chamado.getStatus().isEmpty())
+			chamadoAtual.setStatus(chamado.getStatus());
+		chamadoAtual = this.chamadoRepository.save(chamadoAtual);	
+		return mapper.map(chamadoAtual, ChamadoDTO.class);
 	}
 
 	@Override
@@ -75,30 +62,20 @@ public class ChamadoServiceInterfaceImpl implements ChamadoServiceInterface{
 	}
 
 	@Override
-	@Transactional(readOnly = true)
-	public List<ChamadoDTO> getChamados() {
-		List<ChamadoDTO> chamadosDTO = new ArrayList<>();		
+	@Transactional
+	public List<ChamadoDTO> getChamados() {		
+		List<ChamadoDTO> chamadosDTO = new ArrayList<>();
 		this.chamadoRepository.findAll().forEach(chamado -> {
-			ChamadoDTO chamadoDTO = new ChamadoDTO();
-			chamadosDTO.add(chamadoDTO)	;		
-		});
+			chamadosDTO.add(mapper.map(chamado, ChamadoDTO.class));
+		});;
 		return chamadosDTO;
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public ChamadoDTO getChamado(Long id) throws ResourceNotFoundException {
-		Chamado chamado = chamadoRepository.findById(id)
+		Chamado chamado = this.chamadoRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Chamado não encontrado para o ID :: " + id));
-		ChamadoDTO chamadoDTO = new ChamadoDTO();
-		chamadoDTO.setAssunto(chamado.getAssunto());
-		chamadoDTO.setCadastradoEm(chamado.getCadastradoEm());
-		chamadoDTO.setClienteCnpj(chamado.getClienteCnpj());
-		chamadoDTO.setClienteId(chamado.getClienteId());
-		chamadoDTO.setEndereco(chamado.getEndereco());
-		chamadoDTO.setNomeCliente(chamado.getNomeCliente());
-		chamadoDTO.setStatus(chamado.getStatus());
-		return chamadoDTO;	
+		return mapper.map(chamado, ChamadoDTO.class);
 	}
 
 }

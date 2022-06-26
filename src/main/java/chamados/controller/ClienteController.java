@@ -6,8 +6,8 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,40 +24,41 @@ import chamados.model.Cliente;
 import chamados.service.ClienteServiceInterface;
 
 @RestController
+@CrossOrigin(origins="http://localhost:3000")
 @RequestMapping("/costumers")
 public class ClienteController {	
 	
 	@Autowired
 	ClienteServiceInterface clienteServiceInterface;
 	
-	@GetMapping("/list")
+	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
 	public List<ClienteDTO> getAllClientes(){	
 		return clienteServiceInterface.getClientes();
 	}
 	
-	@GetMapping("/list/{id}")
+	@GetMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<ClienteDTO> getClienteById(@PathVariable(value = "cliente") Long id) throws ResourceNotFoundException {		
+	public ClienteDTO getClienteById(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {		
 		ClienteDTO clienteDTO = clienteServiceInterface.getCliente(id);
-	    return ResponseEntity.ok().body(clienteDTO);
+	    return clienteDTO;
 	}
 	
-	@PostMapping("/save")
+	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public ClienteDTO createCliente(@RequestBody Cliente cliente) {
 		return this.clienteServiceInterface.createCliente(cliente);
 	}
 	
-	@PutMapping("/update/{id}")
+	@PutMapping
 	@ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<ClienteDTO> updateCliente(@PathVariable(value = "id") Long id,
-    	@Validated @RequestBody Cliente clienteCaracteristicas) throws ResourceNotFoundException {
-		ClienteDTO clienteDTO  = clienteServiceInterface.updateCliente(id, clienteCaracteristicas);        
-        return ResponseEntity.ok(clienteDTO);     
+    public ClienteDTO updateCliente(@PathVariable(value = "id") Long id,
+    	@Validated @RequestBody Cliente cliente) throws ResourceNotFoundException {
+		ClienteDTO clienteDTO = clienteServiceInterface.updateCliente(id, cliente);
+        return clienteDTO;     
     }
 	
-	@DeleteMapping("/delete/{id}")
+	@DeleteMapping
 	@ResponseStatus(HttpStatus.OK)
 	public Map<String, Boolean> deleteCliente(@PathVariable(value = "id") Long id)  {
 		clienteServiceInterface.deleteCliente(id);       

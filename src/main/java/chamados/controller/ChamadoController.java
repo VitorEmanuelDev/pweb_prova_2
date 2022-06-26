@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,40 +24,41 @@ import chamados.model.Chamado;
 import chamados.service.ChamadoServiceInterface;
 
 @RestController
-@RequestMapping("/dashboard")
+@CrossOrigin(origins="http://localhost:3000")
+@RequestMapping
 public class ChamadoController {	
 	
 	@Autowired
 	ChamadoServiceInterface chamadoServiceInterface;
 	
-	@GetMapping("/list")
+	@GetMapping("/dashboard")
 	@ResponseStatus(HttpStatus.OK)
 	public List<ChamadoDTO> getAllChamados(){	
 		return chamadoServiceInterface.getChamados();
 	}
 	
-	@GetMapping("/list/{id}")
+	@GetMapping("dashboard/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<ChamadoDTO> getChamadoById(@PathVariable(value = "cliente") Long id) throws ResourceNotFoundException {		
+	public ChamadoDTO getChamadoById(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {		
 		ChamadoDTO chamadoDTO = chamadoServiceInterface.getChamado(id);
-	    return ResponseEntity.ok().body(chamadoDTO);
+	    return chamadoDTO;
 	}
 	
-	@PostMapping("/save")
+	@PostMapping("/new")
 	@ResponseStatus(HttpStatus.CREATED)
 	public ChamadoDTO createChamado(@RequestBody Chamado chamado) throws ResourceNotFoundException {
 		return this.chamadoServiceInterface.createChamado(chamado);
 	}
 	
-	@PutMapping("/update/{id}")
+	@PutMapping("/dashboard/{id}")
 	@ResponseStatus(HttpStatus.OK)
     public ResponseEntity<ChamadoDTO> updateChamado(@PathVariable(value = "id") Long id,
-    	@Validated @RequestBody Chamado chamadoCaracteristicas) throws ResourceNotFoundException {
-		ChamadoDTO chamadoDTO  = chamadoServiceInterface.updateChamado(id, chamadoCaracteristicas);        
+    	@Validated @RequestBody Chamado chamado) throws ResourceNotFoundException {
+		ChamadoDTO chamadoDTO  = chamadoServiceInterface.updateChamado(id, chamado);        
         return ResponseEntity.ok(chamadoDTO);     
     }
 	
-	@DeleteMapping("/delete/{id}")
+	@DeleteMapping("/dashboard/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public Map<String, Boolean> deleteChamado(@PathVariable(value = "id") Long id)  {
 		chamadoServiceInterface.deleteChamado(id);       
