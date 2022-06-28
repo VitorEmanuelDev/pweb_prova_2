@@ -33,9 +33,9 @@ public class ChamadoServiceInterfaceImpl implements ChamadoServiceInterface{
 	@Override
 	@Transactional
 	public ChamadoDTO createChamado(Chamado chamado) throws ResourceNotFoundException{
-		Cliente cliente = this.clienteRepository.findById(chamado.getClienteId())
+		this.clienteRepository.findById(chamado.getClienteId())
 				.orElseThrow(() -> new ResourceNotFoundException("Chamado não encontrado para o ID :: " + chamado.getClienteId()));
-		Chamado chamadoAtual = new Chamado(cliente.getId(), chamado.getNomeCliente(), chamado.getAssunto(), chamado.getComplemento(), chamado.getStatus());
+		Chamado chamadoAtual = new Chamado(chamado.getClienteId(), chamado.getNomeCliente(), chamado.getAssunto(), chamado.getComplemento(), chamado.getStatus());
 		chamadoAtual = this.chamadoRepository.save(chamadoAtual);
 		return mapper.map(chamadoAtual, ChamadoDTO.class);
 	}

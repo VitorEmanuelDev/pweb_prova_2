@@ -43,6 +43,7 @@ public class ClienteController {
 		ClienteDTO clienteDTO = clienteServiceInterface.getCliente(id);
 	    return clienteDTO;
 	}
+
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
@@ -50,7 +51,7 @@ public class ClienteController {
 		return this.clienteServiceInterface.createCliente(cliente);
 	}
 	
-	@PutMapping
+	@PutMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
     public ClienteDTO updateCliente(@PathVariable(value = "id") Long id,
     	@Validated @RequestBody Cliente cliente) throws ResourceNotFoundException {
@@ -58,7 +59,7 @@ public class ClienteController {
         return clienteDTO;     
     }
 	
-	@DeleteMapping
+	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public Map<String, Boolean> deleteCliente(@PathVariable(value = "id") Long id)  {
 		clienteServiceInterface.deleteCliente(id);       
@@ -67,3 +68,5 @@ public class ClienteController {
 	    return resposta;
 	}
 }
+
+	

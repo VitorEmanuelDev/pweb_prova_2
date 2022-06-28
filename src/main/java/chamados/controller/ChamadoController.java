@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 
 import chamados.dto.ChamadoDTO;
@@ -52,10 +51,10 @@ public class ChamadoController {
 	
 	@PutMapping("/dashboard/{id}")
 	@ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<ChamadoDTO> updateChamado(@PathVariable(value = "id") Long id,
+    public ChamadoDTO updateChamado(@PathVariable(value = "id") Long id,
     	@Validated @RequestBody Chamado chamado) throws ResourceNotFoundException {
 		ChamadoDTO chamadoDTO  = chamadoServiceInterface.updateChamado(id, chamado);        
-        return ResponseEntity.ok(chamadoDTO);     
+        return chamadoDTO;     
     }
 	
 	@DeleteMapping("/dashboard/{id}")

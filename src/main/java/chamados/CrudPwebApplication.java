@@ -41,28 +41,13 @@ public class CrudPwebApplication implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {
-		Cliente cliente = new Cliente("Selecione um cliente", "42398869000186", "          ");
+		Cliente cliente = new Cliente("Selecione um cliente", "16380481000148", "          ");
 		cliente = this.clienteRepository.save(cliente);
-		Cliente cliente1 = new Cliente("Teste", "16380481000148", "endereco da pessoa");
-		cliente1 = this.clienteRepository.save(cliente1);
-		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-		String json = ow.writeValueAsString(cliente1);
-		
-		System.out.println(json);
-		
-		Perfil perfil = new Perfil("nome perfil", "teste123@gmail.com");
-		perfil = this.perfilRepository.save(perfil);
-		ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-		json = ow.writeValueAsString(perfil);
-		
-		System.out.println(json);
-		
-		Chamado chamado = new Chamado(cliente1.getId(), "vitor", "assunto exemplo", "endereco 987", "Aberto");
-		chamado = this.chamadoRepository.save(chamado);
-		ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-		json = ow.writeValueAsString(chamado);
-		
-		System.out.println(json);
-					
+//		Cliente cliente1 = new Cliente("Teste", "56514857000184", "endereco da pessoa");
+//		cliente1 = this.clienteRepository.save(cliente1);	
+//		Perfil perfil = new Perfil("nome perfil", "teste123@gmail.com");
+//		perfil = this.perfilRepository.save(perfil);
+//		Chamado chamado = new Chamado(cliente1.getId(), "Tobias", "assunto exemplo", "endereco 987", "Aberto");
+//		chamado = this.chamadoRepository.save(chamado);				
 	}
 }

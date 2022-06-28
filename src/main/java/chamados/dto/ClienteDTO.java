@@ -3,6 +3,7 @@ package chamados.dto;
 
 public class ClienteDTO {
 	
+	private Long id;
 	private String nome;
 	private String cnpj;
 	private String endereco;
@@ -35,4 +36,12 @@ public class ClienteDTO {
 		this.nome = nome;
 	}
 
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
 }
