@@ -57,11 +57,8 @@ public class PerfilServiceInterfaceImpl implements PerfilServiceInterface{
 	public PerfilDTO updatePerfil(Long id, Perfil perfil) throws ResourceNotFoundException {
 		Perfil perfilAtual = this.perfilRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Perfil não encontrado para o ID :: " + id));
-		if(perfil.getNome() != null && !perfil.getNome().isBlank() && !perfil.getNome().isEmpty())
 			perfilAtual.setNome(perfil.getNome());
-		if(perfil.getEmail() != null && !perfil.getEmail().isBlank() && !perfil.getEmail().isEmpty())
 			perfilAtual.setEmail(perfil.getEmail());
-		if(perfil.getFoto() != null)
 			perfilAtual.setFoto(perfil.getFoto());	
 		return mapper.map(perfilAtual, PerfilDTO.class);
 	}

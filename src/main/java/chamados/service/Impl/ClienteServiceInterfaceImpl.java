@@ -56,11 +56,9 @@ public class ClienteServiceInterfaceImpl implements ClienteServiceInterface{
 	public ClienteDTO updateCliente(Long id, Cliente cliente) throws ResourceNotFoundException {
 		Cliente clienteAtual = this.clienteRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado para o ID :: " + id));
-		if(cliente.getNome() != null && !cliente.getNome().isBlank() && !cliente.getNome().isEmpty())
+		
 			clienteAtual.setNome(cliente.getNome());
-		if(cliente.getCnpj() != null && !cliente.getCnpj().isBlank() && !cliente.getCnpj().isEmpty())
 			clienteAtual.setCnpj(cliente.getCnpj());
-		if(cliente.getEndereco() != null && !cliente.getEndereco().isBlank() && !cliente.getEndereco().isEmpty())
 			clienteAtual.setEndereco(cliente.getEndereco());
 		return mapper.map(clienteAtual, ClienteDTO.class);
 	}

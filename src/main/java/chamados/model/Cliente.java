@@ -31,7 +31,7 @@ public class Cliente {
 	@Column(name = "cnpj", unique=true)
 	private String cnpj;
 	@NotNull
-	@Size(min=10, max=140)
+	@Size(min=2, max=140)
 	@Column(name = "endereco")
 	private String endereco;
 	@Column(name = "chamados")
@@ -44,7 +44,7 @@ public class Cliente {
 
 	public Cliente(@NotNull @Size(min = 3, max = 100) String nome,
 			@NotNull @CNPJ String cnpj,
-			@NotNull @Size(min = 10, max = 140) String endereco) {
+			@NotNull @Size(min = 2, max = 140) String endereco) {
 		this.nome = nome;
 		this.cnpj = cnpj;
 		this.endereco = endereco;
